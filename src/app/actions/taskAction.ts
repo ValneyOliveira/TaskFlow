@@ -1,12 +1,25 @@
+'use server'
 import { db } from "@/lib/firebase/adminConfig";
 import { Task, Status } from "@/types";
-import { auth, firestore } from "firebase-admin";
+import { firestore } from "firebase-admin";
 
-export async function getTasks(projectId: string) {
-    const snapshot = await db.collection('tasks')
-        .where('projectId', '==', projectId)
-        .get();
+// const snapshot = await db.collection('projects').get();
+//     const projects: Project[] = [];
     
+//     snapshot.forEach(doc => {
+//         const projectData = doc.data() as Project;
+
+//         if (projectData.createdAt instanceof firestore.Timestamp) {
+//             projectData.createdAt = projectData.createdAt.toDate();
+//         }
+
+//         projectData.id = doc.id;
+//         projects.push(projectData);
+//     });
+//     return projects;
+
+export async function getTasks() {
+    const snapshot = await db.collection('tasks').get();
     const tasks: Task[] = [];
     
     snapshot.forEach(doc => {
@@ -25,20 +38,21 @@ export async function getTasks(projectId: string) {
     return tasks;
 }
 
-export async function saveTask(formdata: any, projectId: string, userId: string) {
+export async function saveTask(data: any) {
     const newTask: Task = {
         id: '',
-        title: formdata.title,
-        description: formdata.description,
-        status: formdata.status,
-        priority: formdata.priority,
-        dueDate: formdata.dueDate,
-        projectId: projectId,
-        assigneeId: formdata.assigneeId,
+        title: data.title,
+        description: data.description,
+        status: data.status,
+        priority: data.priority,
+        dueDate: data.dueDate,
+        projectId: data.projectId,
+        assigneeId: data.assigneeId,
         createdAt: new Date(),
+        userId: data.userId
     };
 
-    const docRef = await db.collection('tasks').add({...newTask, userId: userId});
+    const docRef = await db.collection('tasks').add(newTask);
     console.log(`Tarefa criada com ID: ${docRef.id}`);
     return docRef.id;
 }

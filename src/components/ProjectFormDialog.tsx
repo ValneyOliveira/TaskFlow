@@ -11,27 +11,32 @@ import * as Select from './ui/select'
 import { Button } from './ui/button'
 import { Label } from './ui/label'
 import { Input } from './ui/input'
-import { Project } from '@/types'
 import { Textarea } from './ui/textarea'
-
-
-
+import { useProjectContext } from '@/context'
 
 interface OpenDialogProps {
     action: string,
-    project?: Project,
     projectId?: string,
-    actionName?: string
+    actionName: string,
+    children?: React.ReactNode
 }
 
-export const ProjectFormDialog = ({ action, project, projectId, actionName } : OpenDialogProps ) => {
+export const ProjectFormDialog = ({ action, projectId, actionName, children } : OpenDialogProps ) => {
     const router = useRouter()
     const pathname = usePathname()
-    const [name, setName] = React.useState<string>(project? project.name : '');
-    const [description, setDescription] = React.useState<string>(project? project.description : '')
-    const [status, setStatus] = React.useState<string>(project? project.status : 'pending')
-    const [dueDate, setDueDate] = React.useState<any>(project? project?.dueDate?.toLocaleString() : Date.now())
+    const { projects } = useProjectContext()
+    
+    const project  = projects.find(project => project.id === projectId)
 
+    let formUpdate = action === 'form' && actionName === 'edit'
+
+   
+
+    const [name, setName] = React.useState<string | undefined>(formUpdate ? project?.name : '');
+    const [description, setDescription] = React.useState<string | undefined>(formUpdate ? project?.description : '')
+    const [status, setStatus] = React.useState<string | undefined>(formUpdate ? project?.status : 'pending')
+    const [dueDate, setDueDate] = React.useState<any | undefined>(formUpdate ? project?.dueDate?.toLocaleString() : Date.now())
+1
     
     async function handleSaveProject(e: FormEvent){
         e.preventDefault();
@@ -65,15 +70,16 @@ export const ProjectFormDialog = ({ action, project, projectId, actionName } : O
         {action === "form" ? (
             <Component.Dialog>
                 <Component.DialogTrigger asChild className='hover:cursor-pointer'>
-                    {project?.id? (
+                    {action === 'form' && actionName === 'edit' ? (
                         <div className={`flex items-center gap-x-0.5 rounded-sm ${actionName && 'p-2 bg-blue-500 text-white hover:bg-blue-400'}`}>
                             <Lucide.Edit className={`h-5 ${!actionName && 'hover:text-blue-500'}`}/>
-                            <span className='text-sm'>{actionName}</span>
-                    </div>
+                            <span className='text-sm'>{children}</span>                            
+                        </div>
                     ) : (
                         <div className={`flex items-center gap-x-0.5 bg-blue-500 text-white rounded-sm hover:bg-blue-400 ${actionName && 'p-2'}`}>
                             <Lucide.Plus className='h-5'/>
-                            <span className='text-sm'>{actionName}</span>
+                            <span className='text-sm'>{children}</span>
+                        
                         </div>
                      )}
                 </Component.DialogTrigger>
@@ -139,7 +145,7 @@ export const ProjectFormDialog = ({ action, project, projectId, actionName } : O
                     {actionName ? (
                         <div className='flex items-center gap-x-0.5 bg-red-500 text-white rounded-sm p-2 hover:bg-red-400'>
                             <Lucide.Trash className='h-5'/>
-                            <span className='text-sm'>{actionName}</span>
+                            <span className='text-sm'>{children}</span>
                         </div>
                     ) : (
                         <Lucide.Trash className='h-5 hover:text-red-400'/>
@@ -155,11 +161,13 @@ export const ProjectFormDialog = ({ action, project, projectId, actionName } : O
                     <div className='mx-auto space-x-4 '>
 
                         <Component.DialogClose asChild>
-                            <Button className='hover:cursor-pointer'>Cancelar</Button>
+                            <Button className='hover:cursor-pointer'>{children? children : 'Cancelar'}</Button>
                         </Component.DialogClose>
 
                         <Component.DialogTrigger asChild >
-                            <Button className='bg-red-500 text-white hover:bg-red-400 hover:cursor-pointer' onClick={() => deleteProjectById(projectId)}>Excluir</Button>
+                            <Button className='bg-red-500 text-white hover:bg-red-400 hover:cursor-pointer' onClick={() => deleteProjectById(projectId)}>
+                                {children? children : 'Excluir'}
+                            </Button>
                         </Component.DialogTrigger>
                     </div>
                 </Component.DialogContent>

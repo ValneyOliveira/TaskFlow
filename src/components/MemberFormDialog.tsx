@@ -15,8 +15,10 @@ import {
 import { Project, User } from '@/types';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Checkbox } from './ui/checkbox';
-import { addMemberToProject } from '@/app/actions/projectAction';
+import { addMemberToProject, getProjects, removeProjectMember } from '@/app/actions/projectAction';
 import { useRouter } from 'next/navigation';
+import { mockUsers } from '@/data/mockData';
+import { useProjectContext } from '@/context';
 
 export const MemberFormDialog = ({ project }:{project: Project}) => {
 
@@ -44,29 +46,35 @@ export const MemberFormDialog = ({ project }:{project: Project}) => {
 }
 
 interface MemberListProps {
-    members: User[], 
-    projectId: string,
-    project: Project
+    projectId: string | undefined,
 }
-export const MemberListDialog = ({ members, projectId, project }: MemberListProps) => {
+export const MemberListDialog = ({ projectId }: MemberListProps) => {
     const router = useRouter();
-    const [membersId, setMembersId] = React.useState<string[] >(project.memberIds)
+    const {projects} = useProjectContext()
+
+    const filteredProject = projects.find(project => project.id == projectId)
+
+    const [membersId, setMembersId] = React.useState<string[] | undefined>(filteredProject?.memberIds)
+    const users = mockUsers // trocar pra users
     
-    const filteredMembers = members.filter((members) => !project.memberIds.includes(members.id));
+    const filteredMembers = mockUsers.filter((members) => !filteredProject?.memberIds.includes(members.id));
 
     const handleAddMemberToProject = (id: string) => {
-        if (membersId.includes(id)){
+        if (membersId?.includes(id)){
             const newArr = membersId.filter(item => item !== id)
             setMembersId(newArr)
         } else { 
-            setMembersId((prevs) => [...prevs, id])
+            setMembersId((prevs) => [...prevs!, id])
         }
         router.refresh()
     }
     
     const handleSaveMembers = () => {
-        addMemberToProject(projectId, membersId)
-        router.refresh()
+        if(projectId) {
+            addMemberToProject(projectId!, membersId!)
+            router.refresh()
+        }
+        return
     }
 
     return (
@@ -88,7 +96,7 @@ export const MemberListDialog = ({ members, projectId, project }: MemberListProp
                   <div className='flex flex-col gap-4 my-4'>
                     {filteredMembers.map((member) => (
                         <div className='flex items-center gap-2' key={member.id}>
-                           <Checkbox checked={membersId.includes(member.id)}  onCheckedChange={() => handleAddMemberToProject(member.id)}/>
+                           <Checkbox checked={membersId?.includes(member.id)}  onCheckedChange={() => handleAddMemberToProject(member.id)}/>
                             <Avatar>
                                 <AvatarImage src={member.avatar} alt="@projectMember" />
                                 <AvatarFallback>{member.name.slice(0, 2)}</AvatarFallback>
@@ -109,4 +117,5 @@ export const MemberListDialog = ({ members, projectId, project }: MemberListProp
       </>
     )
   }
+
 

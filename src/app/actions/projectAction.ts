@@ -30,7 +30,7 @@ export async function saveProject(formdata: any) {
         status: formdata.status,
         progress: 0,
         dueDate: formdata.dueDate,
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
         tasks: [],
         memberIds: [],
     };

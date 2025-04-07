@@ -1,8 +1,7 @@
 
 import { getProjects } from '@/app/actions/projectAction';
-import { ToggleTheme } from '@/components/buttons/ToggleTheme'
-import { StatsCard } from '@/components/shared/StatsCard';
-import { mockTasks, mockUsers } from '@/data/mockData';
+import { getTasks } from '@/app/actions/taskAction';
+import { StatsCard } from '@/components/shared/StatsCard'
 import * as Lucide from 'lucide-react';
 
 
@@ -12,12 +11,13 @@ export default async function Dashboard(){
     const completedProjects = (await getProjects()).filter(p => p.status === "completed").length;
     const inProgressProjects = (await getProjects()).filter(p => p.status === "in_progress").length;
 
-    const totalTasks = mockTasks.length;
-    const completedTasks = mockTasks.filter(t => t.status === "completed").length;
-    const pendingTasks = mockTasks.filter(t => t.status === "pending").length;
-    const inProgressTasks = mockTasks.filter(t => t.status === "in_progress").length;
 
-    const totalMembers = mockUsers.length;
+    const totalTasks = (await getTasks()).flatMap.length;
+    const completedTasks = (await getTasks()).filter(t => t.status === "completed").length;
+    const pendingTasks = (await getTasks()).filter(t => t.status === "pending").length;
+    const inProgressTasks = (await getTasks()).filter(t => t.status === "in_progress").length;
+
+    const totalMembers = (await getTasks()).length;
 
    
     
@@ -31,7 +31,7 @@ export default async function Dashboard(){
       
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <StatsCard 
-                    title='total'
+                    title='Total de Projetos'
                     description=''
                     value={totalProjects} 
                     icon={Lucide.FolderKanban}

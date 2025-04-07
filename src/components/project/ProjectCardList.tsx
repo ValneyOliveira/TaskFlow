@@ -5,18 +5,20 @@ import Link from 'next/link'
 
 import * as Lucide from 'lucide-react'
 
-import { Project, translateStatusText } from '@/types'
+import { Project } from '@/types'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card'
 import { ProjectFormDialog } from '../ProjectFormDialog'
 import { Button } from '../ui/button'
 import { ProgressBar } from '../shared/ProgressBar'
-import { Badge } from '../ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { mockUsers } from '@/data/mockData'
+import { StatusBadge } from '../shared/StatusBadge'
+import { useProjectContext } from '@/context'
+import { EmptyState } from '../shared/EmptyState'
 
 
-export const ProjectCard = ({ project }: {project: Project}) => {
-
+// tela de projeto
+const ProjectCard = ({ project }: {project: Project}) => {
   const members = mockUsers.filter(item => project.memberIds.includes(item.id))
 
   return (
@@ -27,7 +29,7 @@ export const ProjectCard = ({ project }: {project: Project}) => {
             <CardTitle className="truncate">{project.name}</CardTitle>
             <CardDescription className="mt-1 line-clamp-2">{project.description}</CardDescription>
           </div>
-          <Badge>{translateStatusText(project.status)}</Badge>
+          <StatusBadge status={project.status}/>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -61,8 +63,8 @@ export const ProjectCard = ({ project }: {project: Project}) => {
             </div>
             
             <div className="flex gap-2 items-center">
-                <ProjectFormDialog action='form' project={project}/>
-                <ProjectFormDialog action='trash' projectId={project.id}/>
+                <ProjectFormDialog action='form' projectId={project.id} actionName='edit'/>
+                <ProjectFormDialog action='delete' projectId={project.id} actionName='delete'/>
 
                 <Button asChild className='h-7 '>
                     <Link href={`/projects/${project.id}`}>
@@ -73,6 +75,25 @@ export const ProjectCard = ({ project }: {project: Project}) => {
       </div>
       </CardFooter>
     </Card>
+  )
+}
+
+// tela de projetos
+export const ProjectCardList = () => {
+  const { projects } = useProjectContext()
+
+  return (
+    <div className={`${projects.length === 0? 'm-auto md:mt-10'  : 'grid gap-4 md:grid-cols-2 lg:grid-cols-3'}`}>
+      <>
+      {projects.length === 0 ? (
+        <EmptyState actionLabel='jj' action='create_project'
+          title='Nenhum projeto encontrado' 
+          description='nada Não encontramos nenhum projeto com os filtros atuais. Tente ajustar seus critérios de busca ou crie um novo projeto.'/>
+        ) : (
+          projects.map((project, index) => (<ProjectCard project={project} key={index}/>)
+        ))}
+      </>      
+    </div>
   )
 }
 

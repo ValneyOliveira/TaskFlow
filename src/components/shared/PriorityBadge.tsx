@@ -3,9 +3,10 @@ import { cn } from "@/lib/utils";
 interface PriorityBadgeProps {
   priority: "low" | "medium" | "high";
   className?: string;
+  getClass?: boolean;
 }
 
-export function PriorityBadge({ priority, className }: PriorityBadgeProps) {
+export function PriorityBadge({ priority, getClass, className }: PriorityBadgeProps) {
   const getPriorityConfig = (priority: "low" | "medium" | "high") => {
     switch (priority) {
       case "low":
@@ -29,8 +30,9 @@ export function PriorityBadge({ priority, className }: PriorityBadgeProps) {
   const config = getPriorityConfig(priority);
 
   return (
-    <span className={cn("px-2 py-1 text-xs font-medium rounded-full", config.className, className)}>
-      {config.label}
-    </span>
+    
+        <span className={cn("px-2 py-1 text-xs font-medium rounded-full", config.className, className)}>
+          {config.label}
+        </span>
   );
 }

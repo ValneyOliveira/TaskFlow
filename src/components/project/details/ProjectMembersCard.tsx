@@ -4,28 +4,41 @@ import React from 'react'
 
 import * as Lucide from 'lucide-react'
 
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card'
 import { Project, User } from '@/types'
-import { Avatar, AvatarImage } from '../ui/avatar';
+import { Avatar, AvatarImage } from '../../ui/avatar';
 import { AvatarFallback } from '@radix-ui/react-avatar';
-import { MemberListDialog } from '../MemberFormDialog';
+import { MemberListDialog } from '../../MemberFormDialog';
 import { removeProjectMember } from '@/app/actions/projectAction';
-import { Button } from '../ui/button';
+import { Button } from '../../ui/button';
 import { useRouter } from 'next/navigation'
+import { mockUsers } from '@/data/mockData'
+import { useProjectContext } from '@/context'
 
 interface ProjectMembersCard {
-    members: User[];
-    project: Project;
+    projectId: string
 }
 
-export const ProjectMembersCard = ({ members, project }: ProjectMembersCard) => {
+
+//card listas users/membros adicionadas ao projeto
+export const ProjectMembersCard = ({ projectId }: ProjectMembersCard) => {
+    const {projects} = useProjectContext()
+
+    const filteredProjectTest = projects.find(project => project.id === projectId)
+
     const router = useRouter()
-    const filteredMembers = members.filter((members) => project.memberIds.includes(members.id));
+    const members = mockUsers
+
+    const filteredProject = projects.find(project => project.id === projectId)!
+
+    const filteredMembers = members.filter((members) => filteredProjectTest?.memberIds.includes(members.id));
     
     const handleRemoveMember = (projectId: string, memberId: string) => {
         removeProjectMember(projectId, memberId)
         router.refresh()
     }
+
+    console.log(filteredProjectTest?.tasks)
 
   return (
     <>
@@ -34,7 +47,7 @@ export const ProjectMembersCard = ({ members, project }: ProjectMembersCard) => 
                 <CardTitle className='text-2xl'>
                     Membros do Projeto
                 </CardTitle>
-                <MemberListDialog members={members} projectId={project.id} project={project}/>
+                <MemberListDialog projectId={filteredProjectTest?.id} />
             </CardHeader>
             <CardContent>
                 <>
@@ -54,7 +67,7 @@ export const ProjectMembersCard = ({ members, project }: ProjectMembersCard) => 
                         </div>
 
                         <Button className='max-w-max rounded-sm p-2 bg-red-500 text-white hover:bg-red-400 hover:cursor-pointer'
-                            onClick={() => handleRemoveMember(project.id, member.id)}
+                            onClick={() => handleRemoveMember(filteredProjectTest?.id!, member.id)}
                         >
                             <Lucide.Trash className='h-4'/>
                         </Button>

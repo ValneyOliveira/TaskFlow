@@ -1,11 +1,14 @@
+import { format } from "date-fns";
 
 export type Status = "pending" | "in_progress" | "completed" | "canceled";
+export type MemberRole = "viewer" | "editor" | "admin";
 
 export interface User {
   id: string;
   name: string;
   email: string;
   avatar?: string;
+  // role: MemberRole;
 }
 
 export interface Project {
@@ -30,22 +33,41 @@ export interface Task {
   projectId: string;
   assigneeId?: string;
   createdAt: Date;
+  userId: string
 }
 
+export function formattedDate(stringDate: string | undefined ) {
+  const date = new Date(stringDate!)
+  if(!stringDate) {
+    return null
+  } else {
 
-export const translateStatusText = (status: string) => {
-  switch (status) {
-    case "pending":
-      return "Pendente"
-      break;
-    case "in_progress":
-      return "Em Andamento"
-      break;
-    case "completed":
-      return "Concluído"
-      break;
-    case "canceled":
-      return "Cancelado"
-      break;
+    return format(date, "dd/MM/yyyy");
   }
 }
+
+export function getPriorityColor(priority: string) {
+  switch (priority) {
+    case "low":
+      return "border-l-green-400 dark:border-l-green-900";
+    case "medium":
+      return "border-l-yellow-400 dark:border-l-yellow-900";
+    case "high":
+      return "border-l-red-400 dark:border-l-red-900";
+    default:
+      return "border-l-gray-400 dark:border-l-gray-900";
+  }
+}
+
+export function getStatusColor(status: string) {
+  const statusColorMap: any = {
+    pending: "border-l-gray-400 dark:border-l-gray-900",
+    in_progress: "border-l-blue-400 dark:border-l-blue-900",
+    completed: "border-l-green-400 dark:border-l-green-900",
+    canceled: "border-l-red-400 dark:border-l-red-900"
+  };
+
+  return statusColorMap[status] || null;
+}
+
+

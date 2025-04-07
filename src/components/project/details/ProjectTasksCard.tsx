@@ -1,14 +1,17 @@
-import { Task } from '@/types'
+'use client'
+
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
-import { Avatar,  AvatarImage } from '../ui/avatar'
-import { Button } from '../ui/button'
+import { useProjectContext, useTaskContext } from '@/context'
 
 import * as Lucide from 'lucide-react'
-import TaskItem from '../tasks/TaskItem'
+import { Button } from '../../ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card'
 
 
-const ProjectTasksCard = ({ projectTasks }: { projectTasks: Task[] }) => {
+
+const ProjectTasksCard = ({ projectId }: { projectId: string}) => {
+  const { projects } = useProjectContext()
+  const projectTasks = projects.find(project => project.id === projectId)?.tasks
 
   return (
     <div className='col-span-full'>
@@ -21,12 +24,15 @@ const ProjectTasksCard = ({ projectTasks }: { projectTasks: Task[] }) => {
           </Button>
         </CardHeader>
         <CardContent>
-          {projectTasks.length === 0 ? (
+          {projectTasks?.length === 0 ? (
             <p className="text-muted-foreground text-sm">Nenhuma tarefa cadastrada para este projeto.</p>
           ) : (
             <div className="space-y-4">
-              {projectTasks.map(task => (
-                <TaskItem key={task.id} task={task} />
+              {projectTasks?.map(task => (
+                <div key={task.id}>
+                
+                    <span>test</span>
+                </div>
               ))}
             </div>
           )}
