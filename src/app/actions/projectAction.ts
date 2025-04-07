@@ -4,7 +4,6 @@ import { db } from "@/lib/firebase/adminConfig";
 import { Project, Task } from "@/types";
 import { firestore } from "firebase-admin";
 
-
 export async function getProjects() {
     const snapshot = await db.collection('projects').get();
     const projects: Project[] = [];
@@ -12,16 +11,18 @@ export async function getProjects() {
     snapshot.forEach(doc => {
         const projectData = doc.data() as Project;
 
-        projectData.id = doc.id;
+        if (projectData.createdAt instanceof firestore.Timestamp) {
+            projectData.createdAt = projectData.createdAt.toDate();
+        }
 
+        projectData.id = doc.id;
         projects.push(projectData);
     });
-    
     return projects;
 };
 
 export async function saveProject(formdata: any) {
-
+    
     const newProject = {
         id: '',  
         name: formdata.name,
@@ -40,7 +41,7 @@ export async function saveProject(formdata: any) {
 export async function updateProject(formdata: any, id: string) {
     const updatedProject: Partial<Project> = {
         ...formdata,
-      };
+    };
     
     await db.collection('projects').doc(id).update(updatedProject);
 }
@@ -49,11 +50,11 @@ export async function deleteProject(id: string) {
     await db.collection('projects').doc(id).delete();
 }
 
-export async function addMemberToProject(projectId: string, memberId: string) {
+export async function addMemberToProject(projectId: string, memberId: string[]) {
     const projectRef = db.collection('projects').doc(projectId);
     
     await projectRef.update({
-        memberIds: firestore.FieldValue.arrayUnion(memberId),
+        memberIds: firestore.FieldValue.arrayUnion(...memberId),
     });
 }
 

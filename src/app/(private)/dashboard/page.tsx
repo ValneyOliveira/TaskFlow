@@ -1,3 +1,4 @@
+
 import { getProjects } from '@/app/actions/projectAction';
 import { ToggleTheme } from '@/components/buttons/ToggleTheme'
 import { StatsCard } from '@/components/shared/StatsCard';
@@ -6,7 +7,7 @@ import * as Lucide from 'lucide-react';
 
 
 export default async function Dashboard(){
-
+    // Calculate stats
     const totalProjects = (await getProjects()).length;
     const completedProjects = (await getProjects()).filter(p => p.status === "completed").length;
     const inProgressProjects = (await getProjects()).filter(p => p.status === "in_progress").length;
@@ -17,6 +18,8 @@ export default async function Dashboard(){
     const inProgressTasks = mockTasks.filter(t => t.status === "in_progress").length;
 
     const totalMembers = mockUsers.length;
+
+   
     
     {/* <ToggleTheme /> */}
     return (

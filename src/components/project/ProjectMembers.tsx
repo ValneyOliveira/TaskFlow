@@ -1,0 +1,68 @@
+'use client'
+
+import React from 'react'
+
+import * as Lucide from 'lucide-react'
+
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Project, User } from '@/types'
+import { Avatar, AvatarImage } from '../ui/avatar';
+import { AvatarFallback } from '@radix-ui/react-avatar';
+import { MemberListDialog } from '../MemberFormDialog';
+import { removeProjectMember } from '@/app/actions/projectAction';
+import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation'
+
+interface ProjectMembersCard {
+    members: User[];
+    project: Project;
+}
+
+export const ProjectMembersCard = ({ members, project }: ProjectMembersCard) => {
+    const router = useRouter()
+    const filteredMembers = members.filter((members) => project.memberIds.includes(members.id));
+    
+    const handleRemoveMember = (projectId: string, memberId: string) => {
+        removeProjectMember(projectId, memberId)
+        router.refresh()
+    }
+
+  return (
+    <>
+        <Card className='w-full'>
+            <CardHeader className='flex justify-between items-center'>
+                <CardTitle className='text-2xl'>
+                    Membros do Projeto
+                </CardTitle>
+                <MemberListDialog members={members} projectId={project.id} project={project}/>
+            </CardHeader>
+            <CardContent>
+                <>
+                {filteredMembers.map((member) => (
+                    <div key={member.id} className='flex justify-between items-center mt-4'>
+                        
+                        <div className='flex items-center gap-2'>
+                            <Avatar>
+                                <AvatarImage src={member.avatar} alt="@projectMember" />
+                                <AvatarFallback>{member.name.slice(0, 2)}</AvatarFallback>
+                            </Avatar>
+                            
+                            <div className='flex flex-col '>
+                                <span className='-my-1'>{member.name}</span>
+                                <span className='-my-1'>{member.email}</span>
+                            </div>
+                        </div>
+
+                        <Button className='max-w-max rounded-sm p-2 bg-red-500 text-white hover:bg-red-400 hover:cursor-pointer'
+                            onClick={() => handleRemoveMember(project.id, member.id)}
+                        >
+                            <Lucide.Trash className='h-4'/>
+                        </Button>
+                    </div>
+                ))}
+                </>
+            </CardContent>
+        </Card>
+    </>
+  )
+}

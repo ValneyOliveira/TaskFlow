@@ -1,66 +1,62 @@
-'use client'
+import React from 'react'
+import Link from 'next/link';
 
-import React  from 'react'
-import * as Lucide from 'lucide-react';
+import { ProjectFormDialog } from '@/components/ProjectFormDialog';
 
-import { ProjectCard } from '@/components/ProjectCard';
-import { getProjects } from '@/app/actions/projectAction';
-import { Input } from '@/components/ui/input';
-import { Project } from '@/types';
+import * as Lucide from 'lucide-react'
+import { translateStatusText } from '@/types';
+import { Button } from '@/components/ui/button';
+import { ProjectDetailsCard } from '@/components/project/ProjectDetailsCard';
+import { ProjectMembersCard } from '@/components/project/ProjectMembersCard';
 import { mockUsers } from '@/data/mockData';
-import { OpenDialog } from '@/components/OpenDialog';
+import { getProjects } from '@/app/actions/projectAction';
+import ProjectTasksCard from '@/components/project/ProjectTasksCard';
 
 
-export default function Projects(){
-    const [projects, setProjects] = React.useState<Project[]>([])
-    const [searchItem, setSearchItem] = React.useState<string>('')
+export default async function ProjectDetails({ params }: { params: Promise<{ id: string }>}){
+    const { id } = await params
 
-    React.useEffect(() => {
-        async function filterItem(){
-            const projects = await getProjects();
-            if(searchItem){
-                const filteredProject = projects.filter(project => project.name.includes(searchItem))
-                setProjects(filteredProject);
+    const projects = await getProjects()
+    const filteredProject = projects.find(project => project.id === id)!
+    const members = mockUsers
 
-            } else {
-                setProjects(projects);
-            }
-        }
-        filterItem();
-    }, [searchItem])
-        
     return (
         <div className=''>
             <div className='mb-2'>
                 <div className='flex justify-between items-center'>
-                    <div className='space-y-1'>
-                        <h1 className='text-3xl font-bold tracking-tight'>Projetos</h1>
-                        <p className='text-muted-foreground text-sm'>Gerencie seus projetos e acompanhe o progresso.</p>
+                    <div className='flex items-center gap-x-2  space-y-1 '>
+                        <Button asChild className='h-8 w-8'>
+                            <Link href={'/projects'}>
+                                <Lucide.ArrowLeft />
+                            </Link>
+                        </Button>
+                        <div>
+                            <div className='flex items-center gap-2'>
+                                <h1 className='text-2xl font-bold tracking-tight'>{filteredProject.name}</h1>
+                                <span className='text-[9px] py-0.5 px-1 rounded-md dark:bg-primary dark:text-black'>
+                                    {translateStatusText(filteredProject.status)}
+                                </span>
+                            </div>
+                            <p className='text-muted-foreground text-sm'>Gerencie seus projetos e acompanhe o progresso.</p>
+                        </div>
                     </div>
                     
-                    <OpenDialog action='form'/>
-                 
+                    <div className='flex items-center gap-x-4'>
+                        <ProjectFormDialog action='form' project={filteredProject} actionName='Editar'/>
+                        <ProjectFormDialog action='trash' projectId={id} actionName='Excluir'/>
+                    </div>
                 </div>
-
-                <div className='relative'>
-                    <Lucide.Search className='absolute left-1 top-[11px] h-4' />
-                    <Input 
-                        type='text' 
-                        value={searchItem} 
-                        onChange={(e) => setSearchItem(e.target.value)}
-                        className='my-5 indent-4'
-                        placeholder='Buscar Projetos...'
-                    />
-
-                </div>
-
             </div>
 
-            <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-                {projects.map((project, index) => (
-                    <ProjectCard project={project} users={mockUsers} key={index}/>
-
-                ))}
+            <div className='grid grid-cols-2 gap-8 my-5'>
+                <ProjectDetailsCard 
+                    project={filteredProject}
+                />
+                <ProjectMembersCard 
+                    project={filteredProject}
+                    members={members}
+                />
+                <ProjectTasksCard projectTasks={filteredProject.tasks}/>
             </div>
         </div>
     )

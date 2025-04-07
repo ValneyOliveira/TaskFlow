@@ -1,14 +1,15 @@
 'use client'
 
-import React  from 'react'
+import React from 'react'
 import * as Lucide from 'lucide-react';
 
-import { ProjectCard } from '@/components/ProjectCard';
-import { getProjects } from '@/app/actions/projectAction';
+import { ProjectCard } from '@/components/project/ProjectCard';
 import { Input } from '@/components/ui/input';
 import { Project } from '@/types';
-import { mockUsers } from '@/data/mockData';
-import { OpenDialog } from '@/components/OpenDialog';
+import { getProjects } from '@/app/actions/projectAction';
+import { ProjectFormDialog } from '@/components/ProjectFormDialog';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '@/lib/firebase/firebaseConfig';
 
 
 export default function Projects(){
@@ -16,19 +17,32 @@ export default function Projects(){
     const [searchItem, setSearchItem] = React.useState<string>('')
 
     React.useEffect(() => {
-        async function filterItem(){
-            const projects = await getProjects();
+        async function isSearching() {
+            let copyData = await getProjects()
             if(searchItem){
-                const filteredProject = projects.filter(project => project.name.includes(searchItem))
-                setProjects(filteredProject);
-
+                const filtered = copyData.filter(project => project.name.toLocaleLowerCase().includes(searchItem.toLocaleLowerCase()))
+                setProjects(filtered)
             } else {
-                setProjects(projects);
+                setProjects(copyData)
             }
         }
-        filterItem();
+        isSearching();
     }, [searchItem])
-        
+
+    React.useEffect(() => {
+        const unsubscribe =  onSnapshot(collection(db, 'projects'), (snapshot) => {
+            const fetchedProjects: Project[] = [];
+            snapshot.forEach((doc) => {
+                const projectData = doc.data() as Project;
+                projectData.id = doc.id;
+                fetchedProjects.push(projectData)
+            })
+
+            setProjects(fetchedProjects)
+        });
+        return () => unsubscribe();
+    }, []);
+
     return (
         <div className=''>
             <div className='mb-2'>
@@ -37,9 +51,7 @@ export default function Projects(){
                         <h1 className='text-3xl font-bold tracking-tight'>Projetos</h1>
                         <p className='text-muted-foreground text-sm'>Gerencie seus projetos e acompanhe o progresso.</p>
                     </div>
-                    
-                    <OpenDialog action='form'/>
-                 
+                    <ProjectFormDialog action='form' actionName='Criar projeto'/>
                 </div>
 
                 <div className='relative'>
@@ -51,15 +63,12 @@ export default function Projects(){
                         className='my-5 indent-4'
                         placeholder='Buscar Projetos...'
                     />
-
                 </div>
-
             </div>
 
             <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
                 {projects.map((project, index) => (
-                    <ProjectCard project={project} users={mockUsers} key={index}/>
-
+                    <ProjectCard project={project} key={index}/>
                 ))}
             </div>
         </div>

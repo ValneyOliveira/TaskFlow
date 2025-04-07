@@ -1,9 +1,6 @@
 'use server'
 
 import { verifyToken } from "@/lib/firebase/adminConfig"
-import { auth } from "firebase-admin"
-import { User } from "firebase/auth"
-import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 

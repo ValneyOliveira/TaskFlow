@@ -9,6 +9,7 @@ import React from 'react'
         <AppSidebar />
         <>
         <div className='w-full md:max-w-[1200px] md:mx-auto p-5'>
+
           {children}
         </div>
         </>
