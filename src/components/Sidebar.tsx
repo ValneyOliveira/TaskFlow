@@ -13,9 +13,9 @@ const AppSidebar = () => {
 
   const items = [
     { title: 'Dashboard', url: "/dashboard", icon: Lucide.LineChart },
-    { title: 'Projects', url: "/projects", icon: Lucide.FolderKanban },
-    { title: 'Tasks', url: "/tasks", icon: Lucide.FolderKanban },
-    { title: 'Settings', url: "/settings", icon: Lucide.Settings },
+    { title: 'Projetos', url: "/projects", icon: Lucide.FolderKanban },
+    { title: 'Tarefas', url: "/tasks", icon: Lucide.FolderKanban },
+    { title: 'Configurações', url: "/settings", icon: Lucide.Settings },
   ]
 
   return (

@@ -24,7 +24,7 @@ export const ProjectDetailsHeader = ({ projectId }: {projectId: string}) => {
         <div>
             <div className='flex items-center gap-2'>
                 <h1 className='text-2xl font-bold tracking-tight'>{project?.name}</h1>
-                <span className='text-[9px] py-0.5 px-1 rounded-md dark:bg-primary dark:text-black'>
+                <span>
                     <StatusBadge status={project?.status? project.status : 'pending'} />
                 </span>
             </div>

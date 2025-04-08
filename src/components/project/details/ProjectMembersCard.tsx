@@ -38,8 +38,6 @@ export const ProjectMembersCard = ({ projectId }: ProjectMembersCard) => {
         router.refresh()
     }
 
-    console.log(filteredProjectTest?.tasks)
-
   return (
     <>
         <Card className='w-full'>

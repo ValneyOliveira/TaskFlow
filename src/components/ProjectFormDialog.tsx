@@ -30,7 +30,6 @@ export const ProjectFormDialog = ({ action, projectId, actionName, children } : 
 
     let formUpdate = action === 'form' && actionName === 'edit'
 
-   
 
     const [name, setName] = React.useState<string | undefined>(formUpdate ? project?.name : '');
     const [description, setDescription] = React.useState<string | undefined>(formUpdate ? project?.description : '')
@@ -74,7 +73,7 @@ export const ProjectFormDialog = ({ action, projectId, actionName, children } : 
                         <div className={`flex items-center gap-x-0.5 rounded-sm ${actionName && 'p-2 bg-blue-500 text-white hover:bg-blue-400'}`}>
                             <Lucide.Edit className={`h-5 ${!actionName && 'hover:text-blue-500'}`}/>
                             <span className='text-sm'>{children}</span>                            
-                        </div>
+                    </div>
                     ) : (
                         <div className={`flex items-center gap-x-0.5 bg-blue-500 text-white rounded-sm hover:bg-blue-400 ${actionName && 'p-2'}`}>
                             <Lucide.Plus className='h-5'/>

@@ -13,13 +13,19 @@ import { ProgressBar } from '../shared/ProgressBar'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { mockUsers } from '@/data/mockData'
 import { StatusBadge } from '../shared/StatusBadge'
-import { useProjectContext } from '@/context'
-import { EmptyState } from '../shared/EmptyState'
+import { useProjectContext, useTaskContext } from '@/context'
 
 
 // tela de projeto
 const ProjectCard = ({ project }: {project: Project}) => {
+  const { tasks } = useTaskContext()
   const members = mockUsers.filter(item => project.memberIds.includes(item.id))
+
+  const filteredTasks = tasks.filter(task => task.projectId == project.id)
+  const progress = filteredTasks.length === 0 
+    ? 0 : 
+    (filteredTasks.filter(task => task.status === 'completed').length / filteredTasks.length) * 100
+
 
   return (
     <Card className="hover:shadow-md transition-shadow overflow-hidden">
@@ -33,7 +39,7 @@ const ProjectCard = ({ project }: {project: Project}) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <ProgressBar value={project.progress} />
+        <ProgressBar value={progress} />
         
         <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm ">
           <div className="flex items-center text-muted-foreground">
@@ -42,7 +48,7 @@ const ProjectCard = ({ project }: {project: Project}) => {
           </div>
           <div className="flex items-center text-muted-foreground">
             <Lucide.CheckCircle className="mr-2 h-4 w-4" />
-            <span>{project.tasks.filter(t => t.status === "completed").length}/{project.tasks.length} tarefas</span>
+            <span>{filteredTasks?.filter(tasks => tasks.status == 'completed').length}/{filteredTasks?.length} tarefas</span>
           </div>
         </div>
       </CardContent>
@@ -81,19 +87,12 @@ const ProjectCard = ({ project }: {project: Project}) => {
 // tela de projetos
 export const ProjectCardList = () => {
   const { projects } = useProjectContext()
-
+  
   return (
-    <div className={`${projects.length === 0? 'm-auto md:mt-10'  : 'grid gap-4 md:grid-cols-2 lg:grid-cols-3'}`}>
-      <>
-      {projects.length === 0 ? (
-        <EmptyState actionLabel='jj' action='create_project'
-          title='Nenhum projeto encontrado' 
-          description='nada Não encontramos nenhum projeto com os filtros atuais. Tente ajustar seus critérios de busca ou crie um novo projeto.'/>
-        ) : (
-          projects.map((project, index) => (<ProjectCard project={project} key={index}/>)
-        ))}
-      </>      
-    </div>
+    <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+      {projects.map((project, index) => (
+        <ProjectCard project={project} key={index}/>
+      ))}
+  </div>
   )
 }
-

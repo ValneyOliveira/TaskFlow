@@ -9,7 +9,7 @@ import { Badge } from '../ui/badge'
 import { PriorityBadge } from '../shared/PriorityBadge'
 import { CheckCircle } from 'lucide-react'
 import { useProjectContext, useTaskContext } from '@/context'
-import { EmptyState } from '../shared/EmptyState'
+import { mockUsers } from '@/data/mockData'
 
 
 function TaskItem({ tasks, value } : { tasks: Task[],  value: string  }) {
@@ -19,6 +19,14 @@ function TaskItem({ tasks, value } : { tasks: Task[],  value: string  }) {
         const projectFound = projects.find(project =>  project.id === projectId)
         return projectFound?.name
     }
+
+    //mock users
+    const getUser = (taskId?: string, userId?: string) => {
+        const task = tasks.find(t => t.id == taskId);
+        const user = mockUsers.find(u => u.id == task?.assigneeId);
+        return user;
+    }
+
 
     return (
         <>
@@ -51,7 +59,7 @@ function TaskItem({ tasks, value } : { tasks: Task[],  value: string  }) {
                                     </div>
 
                                     <Avatar className="h-10 w-10 mx-auto">
-                                        <AvatarImage src={''} alt="@projectMember"  />
+                                        <AvatarImage src={getUser(task.id, task.assigneeId)?.avatar} alt="@projectMember"  />
                                         <AvatarFallback className={``}>NA</AvatarFallback>
                                     </Avatar>
                                     <span className="dark:text-muted-foreground">{formattedDate(task.dueDate?.toString())}</span>
@@ -63,10 +71,7 @@ function TaskItem({ tasks, value } : { tasks: Task[],  value: string  }) {
             </TabsContent>
         ) : (
             <TabsContent value={value}>
-                <EmptyState 
-                    action='create_task' 
-                    title='Nenhuma tarefa encontrada' 
-                    description='Não encontramos nenhuma tarefa com os filtros atuais. Tente ajustar seus critérios de busca ou crie uma nova tarefa.'/>
+                <span>nao ha tarefas</span>
             </TabsContent>
         )}
         </>

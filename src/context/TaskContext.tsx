@@ -10,33 +10,43 @@ type TaskProps = {
     tasks: Task[];
     setTasks: Dispatch<SetStateAction<Task[]>> | undefined;
     //
-    listProject: string[];
-    setListProjects: Dispatch<SetStateAction<string[]>> | undefined; 
-    //
     searchItem: string;
     setSearchItem: Dispatch<SetStateAction<string>>;
     //
-    filterByName: string; 
-    setFilterByName: Dispatch<SetStateAction<string>> | undefined; 
+    filterByProjectId: string; 
+    setFilterByProjectId: Dispatch<SetStateAction<string>> | undefined; 
   };
 
 const TaskContext = createContext<TaskProps>({
     tasks: [],
     setTasks: undefined,
-    listProject: [],
-    setListProjects: undefined,
     searchItem: '',
     setSearchItem: () => {},
-    filterByName: '',
-    setFilterByName: undefined
+    filterByProjectId: '',
+    setFilterByProjectId: undefined
 })
 
 export function TaskProvider({children}: {children: React.ReactNode}) {
     const [tasks, setTasks] = useState<Task[]>([])
-    const [listProject, setListProjects] = useState<string[]>([])
+    const [copyTasks, setCopyTasks] = useState<Task[]>([])
         
     const [searchItem, setSearchItem] = useState<string>('')
-    const [filterByName, setFilterByName] = useState<string>('')
+    const [filterByProjectId, setFilterByProjectId] = useState<string>('all')
+
+    useEffect(() => {
+        function isSearching() {
+            const data = copyTasks;
+            if(searchItem){
+                const filtered = data.filter(task => task.title.toLocaleLowerCase().includes(searchItem.toLocaleLowerCase()))
+                setTasks(filtered)
+            } else if(filterByProjectId){
+                const filtered = data.filter(task => task.projectId == filterByProjectId)
+                if(filterByProjectId !== 'all') { setTasks(filtered) } else { setTasks(data) }
+            }
+            else { setTasks(data) }
+        }
+        isSearching();
+    }, [searchItem, filterByProjectId])
 
     useEffect(() => {
         const unsubscribe =  onSnapshot(collection(db, 'tasks'), (snapshot) => {
@@ -46,38 +56,20 @@ export function TaskProvider({children}: {children: React.ReactNode}) {
                 taskData.id = doc.id;
                 fetchedTasks.push(taskData)
             })
-            console.log(fetchedTasks)
-
             setTasks(fetchedTasks)
+            setCopyTasks(fetchedTasks)
         });
         
         return () => unsubscribe();
     }, []);
 
-    useEffect(() => {
-        function fetchedTasks(){
-            if(searchItem) {
-                const filter = tasks.filter(task => task.title.toLowerCase().includes(searchItem.toLowerCase())
-                || task.priority.toLowerCase().includes(searchItem.toLowerCase()) || task.status.toLowerCase().includes(searchItem.toLowerCase())
-            ); setTasks(filter) }
-
-            else if(filterByName) {
-                const filter = tasks.filter(task => task.title.toLowerCase().includes(searchItem.toLowerCase()))
-                setTasks(filter)
-            } else { setTasks(tasks) }
-
-        }
-        fetchedTasks();
-    }, [searchItem, filterByName])
-
 
     return (
         <TaskContext.Provider value={
             { 
-                tasks, setTasks, 
-                listProject, setListProjects, 
+                tasks, setTasks,
                 searchItem, setSearchItem, 
-                filterByName, setFilterByName,
+                filterByProjectId, setFilterByProjectId,
             }}
         >
             {children}

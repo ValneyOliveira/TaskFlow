@@ -1,7 +1,6 @@
 'use client'
 
 import React, { FormEvent, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import * as Lucide from 'lucide-react'
 
 
@@ -9,7 +8,7 @@ import * as Component from "@/components/ui/dialog"
 import { Button } from '../ui/button'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
-import { Status, Task } from '@/types'
+import { Project, Status, Task } from '@/types'
 import { Textarea } from '../ui/textarea'
 import { SelectForm } from './SelectForm'
 import { deleteTask, saveTask, updateTask } from '@/app/actions/taskAction'
@@ -21,10 +20,9 @@ interface TaskFormProps {
     action?: string,
     task?: Task,
     taskId?: string,
-    text?: string
 }
 
-export const TaskFormDialog = ({ action, task, taskId, text } : TaskFormProps ) => {
+export const TaskFormDialog = ({ action, task, taskId } : TaskFormProps ) => {
     const { projects } = useProjectContext()
     const user = auth.currentUser?.uid
     
@@ -41,12 +39,10 @@ export const TaskFormDialog = ({ action, task, taskId, text } : TaskFormProps ) 
         description: description,
         status: status as Status,
         priority: priority,
-        projectId: task && projectId.replace(' ', '').length == 0 ? task.projectId : projectId,
-        assigneeId: 'id-usuario',
+        projectId: projectId,
+        assigneeId: member,
         userId: user
     }
-
-
     
     async function handleSaveTask(e: FormEvent){
         e.preventDefault();
@@ -74,7 +70,7 @@ export const TaskFormDialog = ({ action, task, taskId, text } : TaskFormProps ) 
                         ) : (
                             <Lucide.Plus size={16} color='#ffffff'/>
                         )}
-                        <span className='text-sm text-white'>{text}</span>
+                        <span className='text-sm text-white'>{!action && 'Nova Tarefa'}</span>
                     </div>
                 </Component.DialogTrigger>
 

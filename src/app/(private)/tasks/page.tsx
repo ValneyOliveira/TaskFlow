@@ -1,6 +1,6 @@
 'use client'
 
-import React  from 'react'
+import React, { useEffect }  from 'react'
 
 import * as Lucide from 'lucide-react'
 
@@ -13,14 +13,13 @@ import { useTaskContext } from '@/context/TaskContext'
 import { useProjectContext } from '@/context'
 
 
-
 export default function Tasks(){
     const { projects } = useProjectContext()
 
     const {
         tasks,
         searchItem, setSearchItem, 
-        filterByName, setFilterByName
+        filterByProjectId, setFilterByProjectId
     } = useTaskContext();
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,18 +27,16 @@ export default function Tasks(){
     }
 
     return (
-        <div className=''>
+        <div className='pb-4'>
             <div className='mb-2'>
                 <div className='flex justify-between items-center'>
                     <div className='space-y-1'>
                         <h1 className='text-3xl font-bold tracking-tight'>Tarefas</h1>
                         <p className='text-muted-foreground text-sm'>Gerencie seus projetos e acompanhe o progresso.</p>
                     </div>
-                    <ToggleTheme/>
+                    {/* <ToggleTheme/> */}
+                    <TaskFormDialog />
                 </div>
-                <>
-                    <TaskFormDialog text='Nova Tarefa'/>
-                </>
 
                 <div className='flex items-center gap-4 my-5'>
                     <div className='w-full relative'>
@@ -54,12 +51,12 @@ export default function Tasks(){
                     </div>
 
                     <div className='space-y-3'>
-                        <Select.Select onValueChange={setFilterByName} defaultValue={filterByName}>
+                        <Select.Select onValueChange={setFilterByProjectId} defaultValue={filterByProjectId}>
                             <Select.SelectTrigger className="w-[180px]" >
                                 <Select.SelectValue placeholder="Todos os projetos"/>
                             </Select.SelectTrigger>
                             <Select.SelectContent >
-                                <Select.SelectItem value={"all"}>Todos os projetos</Select.SelectItem>
+                                <Select.SelectItem value={'all'}>Todos os projetos</Select.SelectItem>
                                 {projects.map((item, index) => (
                                     <Select.SelectItem key={index} value={item.id}>{item.name}</Select.SelectItem>
                                 ))}

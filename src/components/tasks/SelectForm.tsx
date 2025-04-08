@@ -3,6 +3,7 @@ import React from 'react'
 import { Label } from '../ui/label'
 import * as Select from '../ui/select'
 import { useProjectContext } from '@/context'
+import { mockUsers } from '@/data/mockData'
 
 interface TaskSelectFormProps {
     states: string
@@ -16,6 +17,7 @@ export const SelectForm = ({ states, setStates, label, defaultValue, selectedTyp
     
     const { projects } = useProjectContext()
     const members = projects.map(item => item.memberIds).flatMap(item => item)
+    const mockMembers = mockUsers
 
     const selectStatus = [
         {value: "pending", text: "Pendente"},
@@ -38,7 +40,6 @@ export const SelectForm = ({ states, setStates, label, defaultValue, selectedTyp
             return ''
         }
     }
-
 
   return (
     <>
@@ -63,7 +64,6 @@ export const SelectForm = ({ states, setStates, label, defaultValue, selectedTyp
                     ))
                 ) }
                 
-
                 {selectedType === 'projects' && (
                     projects.map((item, index) => (
                         <Select.SelectItem key={index} value={item.id}>{item.name}</Select.SelectItem>
@@ -71,8 +71,8 @@ export const SelectForm = ({ states, setStates, label, defaultValue, selectedTyp
                 )}
 
                 {selectedType === 'member' && (
-                    members.map((item, index) => (
-                        <Select.SelectItem key={index} value={item}>{item}</Select.SelectItem>
+                    mockMembers.map((item, index) => (
+                        <Select.SelectItem key={index} value={item.id}>{item.name}</Select.SelectItem>
                     ))
                 )}                
             </Select.SelectContent>

@@ -12,7 +12,7 @@ export default async function ProjectDetails({ params }: { params: Promise<{ id:
     const { id } = await params
 
     return (
-        <div className=''>
+        <div className='pb-2'>
             <div className='mb-2'>
                 <div className='flex justify-between items-center'>
                     <div className='flex items-center gap-x-2  space-y-1 '>                        

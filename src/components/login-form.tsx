@@ -25,20 +25,22 @@ export function LoginForm({
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
-
         if(!email || !password) {
             return;
         }
         try {
+          setLoading(true)
             const user = (await signInWithEmailAndPassword(auth, email, password)).user;
             await verifyUser(user.getIdToken());
-
+          
         } catch(error:any) {
             console.log('erro ao fazer login' + error.code)
         }
+      setLoading(false)
 
     }
 
@@ -83,7 +85,7 @@ export function LoginForm({
                     required 
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" className="w-full" disabled={loading}>
                 Login
               </Button>
               {/* <Button variant="outline" className="w-full">
