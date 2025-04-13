@@ -13,10 +13,10 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 
 import Link from "next/link"
-import { FormEvent, useState } from "react"
+import { FormEvent, startTransition, useState } from "react"
 import { signInWithEmailAndPassword } from "firebase/auth"
 import { auth } from "@/lib/firebase/firebaseConfig"
-import { verifyUser } from "@/app/actions/authActions"
+import { Login } from "@/app/actions/authActions"
 
 export function LoginForm({
   className,
@@ -29,24 +29,27 @@ export function LoginForm({
 
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
+
         if(!email || !password) {
             return;
         }
+
         try {
-          setLoading(true)
-            const user = (await signInWithEmailAndPassword(auth, email, password)).user;
-            await verifyUser(user.getIdToken());
-          
-        } catch(error:any) {
-            console.log('erro ao fazer login' + error.code)
-        }
-      setLoading(false)
+          const user = (await signInWithEmailAndPassword(auth, email, password)).user
+          const token = await user.getIdToken()
+
+          startTransition(() => {
+            Login(token)
+          })
+        } catch (error: any) { console.log('erro ao fazer login ' + error.code) } 
+        finally { setLoading(false) }
+        
 
     }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <Card className={`${loading ? 'shadow-md shadow-blue-200' : ''}`}>
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
@@ -85,13 +88,17 @@ export function LoginForm({
                     required 
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                Login
+              <Button type="submit" className="w-full disabled:opacity-90" disabled={loading} >
+                {loading ? (
+                  <div className="animate-spin border rounded-full h-6 w-6 border-t-blue-700 ">
+                    <span className="sr-only">loading...</span>
+                  </div>
+                ) : (
+                  <> Login</>
+                )}
               </Button>
-              {/* <Button variant="outline" className="w-full">
-                Login with Google
-              </Button> */}
             </div>
+
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
               <Link href="/signup" className="underline underline-offset-4">

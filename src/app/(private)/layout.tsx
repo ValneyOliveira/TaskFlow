@@ -10,7 +10,7 @@ import AppWrapper from '@/context/AppWrapper'
         <AppSidebar />
         <>
         <div className='w-full md:max-w-[1200px] md:mx-auto p-5'>
-                {children}
+          {children}
         </div>
         </>
       </SidebarProvider>

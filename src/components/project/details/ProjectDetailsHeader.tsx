@@ -22,7 +22,7 @@ export const ProjectDetailsHeader = ({ projectId }: {projectId: string}) => {
             </Link>
         </Button>
         <div>
-            <div className='flex items-center gap-2'>
+            <div className='lg:flex lg:items-center gap-2'>
                 <h1 className='text-2xl font-bold tracking-tight'>{project?.name}</h1>
                 <span>
                     <StatusBadge status={project?.status? project.status : 'pending'} />

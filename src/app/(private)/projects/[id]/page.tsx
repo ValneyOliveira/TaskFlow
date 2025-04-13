@@ -25,7 +25,7 @@ export default async function ProjectDetails({ params }: { params: Promise<{ id:
                 </div>
             </div>
 
-            <div className='grid grid-cols-2 gap-8 my-5'>
+            <div className='grid lg:grid-cols-2 gap-8 my-5'>
                 <ProjectDetailsCard projectId={id}/>
                 <ProjectMembersCard projectId={id}/>
                 <ProjectTasksCard projectId={id}/>

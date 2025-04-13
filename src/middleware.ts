@@ -2,13 +2,13 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export const TOKEN_KEY = 'user-idToken'
+export const TOKEN_KEY = 'user-token'
 const PROTECTED_ROUTES = ['/home', '/dashboard', '/projects', '/tasks', '/settings', 'profile']
 
 
 export async function middleware(request: NextRequest) {
   const cookie = await cookies()
-  const token = cookie.get(TOKEN_KEY);
+  const token = cookie.get(TOKEN_KEY)?.value;
 
   
   const isProtectedRoute = PROTECTED_ROUTES.includes(request.nextUrl.pathname);

@@ -36,6 +36,16 @@ export interface Task {
   userId: string
 }
 
+export interface UserProfile {
+  uid: string
+  email?: string,
+  phoneNumber?: string,
+  emailVerified: true;
+  password?: string;
+  displayName?: string;
+  photoURL?: string,
+}
+
 export function formattedDate(stringDate: string | undefined ) {
   const date = new Date(stringDate!)
   if(!stringDate) {
