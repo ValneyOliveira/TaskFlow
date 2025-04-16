@@ -6,12 +6,11 @@ import { Label } from '../ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { KeyRound, Save, Trash2 } from 'lucide-react'
+import { KeyRound, Trash2 } from 'lucide-react'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { DialogClose } from '@radix-ui/react-dialog'
 
 export const SecurityContent = () => {
-
   const [deleteConfirmationText, setDeleteConfirmationText] = React.useState("");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
 

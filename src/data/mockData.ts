@@ -1,4 +1,4 @@
-import { Project, Task, User } from "@/types";
+import { User } from "@/types";
 
 // Usuários mock
 export const mockUsers: User[] = [
@@ -37,30 +37,3 @@ export const mockUsers: User[] = [
   
   }
 ];
-
-// Tarefas mock
-//  const mockTasks: Task[] = [
-//   {
-//     id: "task-1",
-//     title: "Criar wireframes",
-//     description: "Criar wireframes para todas as páginas do aplicativo.",
-//     status: "completed",
-//     priority: "high",
-//     dueDate: new Date(2023, 5, 20),
-//     projectId: "project-1",
-//     assigneeId: "user-1",
-//     createdAt: new Date(2023, 5, 10)
-//   },
-//   {
-//     id: "task-2",
-//     title: "Implementar autenticação",
-//     description: "Implementar sistema de login e registro.",
-//     status: "in_progress",
-//     priority: "high",
-//     dueDate: new Date(2023, 6, 5),
-//     projectId: "project-1",
-//     assigneeId: "user-3",
-//     createdAt: new Date(2023, 5, 15)
-//   },
-  
-// ];

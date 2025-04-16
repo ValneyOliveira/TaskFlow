@@ -9,7 +9,7 @@ import AppWrapper from '@/context/AppWrapper'
       <SidebarProvider className='h-screen'>
         <AppSidebar />
         <>
-        <div className='w-full md:max-w-[1200px] md:mx-auto p-5'>
+        <div className='w-full md:max-w-[1200px] md:mx-auto p-5 xl:max-w-full'>
           {children}
         </div>
         </>

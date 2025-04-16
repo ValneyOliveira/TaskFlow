@@ -1,6 +1,6 @@
 import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
-import { GaugeCircle, Shield, SunMedium, Users } from 'lucide-react'
+import { Shield, SunMedium, Users } from 'lucide-react'
 import { ProfileContent } from './ProfileContent'
 import { AppearanceContent } from './AppearanceContent'
 import { SecurityContent } from './SecurityContent'

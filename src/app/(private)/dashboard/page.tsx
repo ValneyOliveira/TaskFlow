@@ -1,27 +1,22 @@
 
 import { getProjects } from '@/app/actions/projectAction';
 import { getTasks } from '@/app/actions/taskAction';
+import { Panel } from '@/components/dashboard/Panel';
 import { StatsCard } from '@/components/shared/StatsCard'
 import { mockUsers } from '@/data/mockData';
 import * as Lucide from 'lucide-react';
 
 
 export default async function Dashboard(){
-    // Calculate stats
     const totalProjects = (await getProjects()).length;
-    const completedProjects = (await getProjects()).filter(p => p.status === "completed").length;
     const inProgressProjects = (await getProjects()).filter(p => p.status === "in_progress").length;
 
     const totalTasks = (await getTasks()).length;
-    const completedTasks = (await getTasks()).filter(t => t.status === "completed").length;
     const pendingTasks = (await getTasks()).filter(t => t.status === "pending").length;
     const inProgressTasks = (await getTasks()).filter(t => t.status === "in_progress").length;
 
     const totalMembers = mockUsers.length;
 
-   
-    
-    {/* <ToggleTheme /> */}
     return (
         <div className="space-y-6">
             <div>
@@ -55,6 +50,8 @@ export default async function Dashboard(){
                     description="Colaboradores ativos"
                 />
             </div>
+
+            <Panel />
         </div>
     )
 }
