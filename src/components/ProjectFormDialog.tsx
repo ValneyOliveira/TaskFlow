@@ -33,13 +33,14 @@ export const ProjectFormDialog = ({ action, projectId, actionName, children } : 
 
     const [name, setName] = React.useState<string | undefined>(formUpdate ? project?.name : '');
     const [description, setDescription] = React.useState<string | undefined>(formUpdate ? project?.description : '')
-    const [status, setStatus] = React.useState<string | undefined>(formUpdate ? project?.status : 'pending')
+    const [status, setStatus] = React.useState<string | undefined>(formUpdate ? project?.status : '')
     const [dueDate, setDueDate] = React.useState<any | undefined>(formUpdate ? project?.dueDate?.toLocaleString() : Date.now())
-1
+
     
     async function handleSaveProject(e: FormEvent){
         e.preventDefault();
         saveProject({name, description, status, dueDate })
+        setName(''); setDescription(''), setStatus('pending')
     }
 
     async function handleUpdateProject(e: FormEvent, projectId: string | undefined){
@@ -84,9 +85,10 @@ export const ProjectFormDialog = ({ action, projectId, actionName, children } : 
                 </Component.DialogTrigger>
                 <Component.DialogContent>
                     <Component.DialogHeader>
-                    <Component.DialogTitle>Editar Projeto</Component.DialogTitle>
+                    <Component.DialogTitle>{actionName == "new" ? "Novo Projeto" : "Editar Projeto"}</Component.DialogTitle>
                     <Component.DialogDescription>
-                        Edite os detalhes do seu projeto abaixo.
+                        
+                        {actionName === "new" ? "Insira os detalhes do projeto abaixo" : "Edite os detalhes do seu projeto abaixo."}
                     </Component.DialogDescription>
                     </Component.DialogHeader>
 
@@ -119,7 +121,7 @@ export const ProjectFormDialog = ({ action, projectId, actionName, children } : 
                         </div>
                         <div className='space-y-3 mt-7'>
                             <Label>Status</Label>
-                            <Select.Select onValueChange={setStatus} defaultValue={'pending'} name='status' >
+                            <Select.Select onValueChange={setStatus} defaultValue={status} name='status' >
                                 <Select.SelectTrigger className="w-[180px]" >
                                     <Select.SelectValue placeholder="select project status"/>
                                 </Select.SelectTrigger>

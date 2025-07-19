@@ -8,6 +8,7 @@ import { Button } from '../../ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { PriorityBadge } from '@/components/shared/PriorityBadge'
+import { TaskFormDialog } from '@/components/tasks/TaskFormDialog'
 
 const ProjectTasksCard = ({ projectId }: { projectId: string}) => {
   const { projects } = useProjectContext()
@@ -23,10 +24,8 @@ const ProjectTasksCard = ({ projectId }: { projectId: string}) => {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className='text-2xl'>Tarefas do Projeto</CardTitle>
-          <Button size="sm" >
-            <Lucide.Plus className="mr-2 h-4 w-4" />
-            <span >Nova Tarefa</span>
-          </Button>
+            <TaskFormDialog action='new'/>
+          
         </CardHeader>
         <CardContent>
           {filteredTasks.length === 0 ? (

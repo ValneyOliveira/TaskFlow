@@ -35,7 +35,7 @@ export default async function Dashboard(){
                     title="Projetos em Andamento" 
                     value={inProgressProjects} 
                     icon={Lucide.Clock}
-                    description={`${(inProgressProjects/totalProjects)*100}% dos projetos`}
+                    description={`${((inProgressProjects / totalProjects) * 100).toFixed(2)}% dos projetos`}
                     />
                 <StatsCard 
                     title="Tarefas Pendentes" 

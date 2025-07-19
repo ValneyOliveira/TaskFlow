@@ -47,6 +47,9 @@ export const TaskFormDialog = ({ action, task, taskId } : TaskFormProps ) => {
     async function handleSaveTask(e: FormEvent){
         e.preventDefault();
         await saveTask(newTask)
+
+        setName(''); setDescription(''); 
+        setStatus(''); setPriority(''); setMember('')
     }
 
     async function handleUpdateTask(e: FormEvent, taskId: string){
@@ -139,7 +142,7 @@ export const TaskFormDialog = ({ action, task, taskId } : TaskFormProps ) => {
                             
                         </div>
                         <Component.DialogTrigger asChild>
-                            <Button type='submit' className='max-w-max self-end bg-blue-500 text-white'>{action === 'edit'? 'Salvar Alterações' : 'Criar Tarefa'}</Button>
+                            <Button type='submit' className='max-w-max self-end bg-blue-500 hover:bg-blue-400 cursor-pointer text-white'>{action === 'edit'? 'Salvar Alterações' : 'Criar Tarefa'}</Button>
                         </Component.DialogTrigger>
                     </form>
                 </Component.DialogContent>

@@ -1,7 +1,6 @@
-// 'use server'
 
 import admin, { auth, firestore } from 'firebase-admin';
-import serviceAccount from '../../../keys/serviceAccountKey.json' // Certifique-se de que o caminho está correto
+import serviceAccount from '../../../keys/serviceAccountKey.json';
 
 if (!admin.apps.length) {
     admin.initializeApp({
@@ -15,13 +14,7 @@ if (!admin.apps.length) {
   admin.firestore().settings({ignoreUndefinedProperties: true})
 }
 
-// export async function db(){ re admin.firestore();}
 export const db = admin.firestore();
-
-// export async function Firestore(){
-//   return admin.firestore
-// }
-
 
 export async function verifyToken(token: string, checkRevoked?: boolean) {
   const decodedToken = await auth().verifyIdToken(token, checkRevoked);
